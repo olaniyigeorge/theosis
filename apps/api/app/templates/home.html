@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ name }} — Engineering Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1220;
+    --ink-2:#172033;
+    --ink-soft:#A7B0BE;
+    --parchment:#F7F3EA;
+    --parchment-2:#E9E2D2;
+    --verdigris:#687A43;
+    --verdigris-dim:#4E5C33;
+    --gold:#C9A227;
+    --rubric:#315D8C;
+    --line:rgba(42,52,72,0.7);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'Source Serif 4', serif;
+    font-size:17px;
+    line-height:1.65;
+  }
+  ::selection{ background:var(--verdigris-dim); color:var(--parchment); }
+
+  a{ color:var(--gold); }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- Nav ---------- */
+  header.top{
+    position:sticky; top:0; z-index:10;
+    background:rgba(27,31,43,0.88);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+    max-width:920px; margin:0 auto;
+  }
+  .topbar .mark{
+    font-family:'Fraunces', serif;
+    font-weight:600; font-size:1.05rem;
+    letter-spacing:0.02em;
+    color:var(--parchment);
+    text-decoration:none;
+  }
+  .topbar .mark em{ font-style:italic; color:var(--gold); }
+  .topbar nav{ display:flex; gap:22px; }
+  .topbar nav a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    padding-bottom:2px;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .topbar nav a:hover{ color:var(--gold); border-color:var(--gold); }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding:76px 0 48px; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--verdigris);
+    margin:0 0 18px;
+  }
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(2.6rem, 7vw, 4.4rem);
+    line-height:0.98;
+    margin:0 0 20px;
+    color:var(--parchment);
+  }
+  h1.title .drop{
+    float:left;
+    font-size:0.92em;
+    line-height:0.8;
+    padding-right:0.05em;
+    color:var(--gold);
+    font-style:italic;
+  }
+  .tagline{
+    font-size:1.18rem;
+    max-width:52ch;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .tagline strong{ color:var(--parchment); font-style:normal; }
+
+  .hero-actions{
+    margin-top:34px;
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    letter-spacing:0.04em;
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:2px;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn.primary{
+    background:var(--gold);
+    color:var(--ink);
+    font-weight:600;
+  }
+  .btn.primary:hover{ background:#DBB94A; }
+  .btn.ghost{
+    border:1px solid var(--line);
+    color:var(--parchment);
+  }
+  .btn.ghost:hover{ border-color:var(--verdigris); color:var(--verdigris); }
+
+  .status-line{
+    margin-top:14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+  .status-dot{
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    background:var(--verdigris); margin-right:8px;
+    box-shadow:0 0 0 3px rgba(92,139,126,0.18);
+  }
+
+  /* ---------- Signature graph ---------- */
+  .graph-card{
+    margin-top:56px;
+    background:var(--parchment);
+    border-radius:3px;
+    padding:38px 36px 28px;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .graph-card .cap{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--verdigris-dim);
+    margin-bottom:14px;
+  }
+  .graph-card svg{ width:100%; height:auto; display:block; }
+  .graph-card .cap-foot{
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:#5B6472;
+  }
+
+  /* ---------- Chapters ---------- */
+  section.chapter{
+    padding:64px 0;
+    border-top:1px solid var(--line);
+  }
+  .chapter-head{
+    display:flex; align-items:baseline; gap:18px;
+    margin-bottom:26px;
+  }
+  .numeral{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.6rem;
+    color:var(--gold);
+    min-width:2.4ch;
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:1.7rem;
+    margin:0;
+    color:var(--parchment);
+  }
+  .chapter-body{ padding-left:calc(2.4ch + 18px); }
+  .chapter-body p{ color:#A7B0BE; max-width:66ch; }
+  .chapter-body p.lede{ color:var(--parchment); font-size:1.05rem; }
+
+  /* scope lists */
+  .scope-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:24px;
+    margin-top:22px;
+  }
+  @media (max-width: 640px){ .scope-grid{ grid-template-columns:1fr; } }
+  .scope-col h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase;
+    margin:0 0 12px;
+  }
+  .scope-col.in h3{ color:var(--verdigris); }
+  .scope-col.out h3{ color:var(--ink-soft); }
+  .scope-col ul{ margin:0; padding-left:18px; }
+  .scope-col li{ margin-bottom:8px; color:#A7B0BE; font-size:0.96rem; }
+  .scope-col.out li{ color:var(--ink-soft); }
+
+  /* architecture flow */
+  .flow{
+    margin-top:26px;
+    display:grid;
+    grid-template-columns:1fr auto 1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+  }
+  @media (max-width: 720px){
+    .flow{ grid-template-columns:1fr; }
+    .flow .arrow{ display:none; }
+  }
+  .flow-box{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:16px 14px;
+    text-align:center;
+  }
+  .flow-box .name{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem; font-weight:600;
+    color:var(--parchment);
+  }
+  .flow-box .sub{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem; color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .arrow{ color:var(--gold); font-size:1.2rem; text-align:center; }
+
+  .flow-tail{
+    margin-top:14px;
+    display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+  }
+  .flow-tail .flow-box{ min-width:170px; }
+
+  /* schema cards */
+  .schema-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    margin-top:22px;
+  }
+  @media (max-width: 640px){ .schema-grid{ grid-template-columns:1fr; } }
+  .schema-card{
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:18px 18px 16px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+  .schema-card h4{
+    margin:0 0 6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.88rem;
+    color:var(--gold);
+  }
+  .schema-card p{
+    margin:0;
+    font-size:0.88rem;
+    color:var(--ink-soft);
+  }
+  .schema-card code.field{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--verdigris);
+    display:block;
+    margin-top:8px;
+  }
+
+  /* pipeline */
+  .pipeline{
+    display:flex; align-items:center; gap:0; flex-wrap:wrap;
+    margin-top:26px;
+  }
+  .pipe-step{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    padding:10px 16px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    color:var(--parchment);
+    background:var(--ink-2);
+  }
+  .pipe-step.draft{ border-color:var(--rubric); color:var(--rubric); background:transparent; }
+  .pipe-step.published{ border-color:var(--verdigris); color:var(--verdigris); }
+  .pipe-arrow{ padding:0 10px; color:var(--ink-soft); }
+
+  .rule-note{
+    margin-top:20px;
+    padding:14px 18px;
+    border-left:2px solid var(--rubric);
+    color:#A7B0BE;
+    font-size:0.92rem;
+    font-style:italic;
+  }
+
+  /* endpoints */
+  .endpoint-list{ margin-top:22px; border-top:1px solid var(--line); }
+  .endpoint{
+    display:flex; gap:16px; align-items:baseline;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.86rem;
+  }
+  .verb{
+    min-width:56px;
+    font-weight:600;
+  }
+  .verb.get{ color:var(--verdigris); }
+  .verb.post{ color:var(--gold); }
+  .path{ color:var(--parchment); }
+  .desc{
+    font-family:'Source Serif 4', serif;
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+  }
+
+  /* roadmap */
+  .roadmap{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 640px){ .roadmap{ grid-template-columns:1fr; } }
+  .week{
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:18px;
+  }
+  .week .wk-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .week ul{ margin:0; padding-left:16px; }
+  .week li{ font-size:0.88rem; color:#A7B0BE; margin-bottom:6px; }
+
+  footer{
+    padding:44px 0 60px;
+    border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+  footer a{ color:var(--ink-soft); }
+  footer a:hover{ color:var(--gold); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <a class="mark" href="#top">Theos<em>is</em></a>
+    <nav>
+      <a href="#scope">Scope</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#data-model">Data Model</a>
+      <a href="#ai-workflow">AI Workflow</a>
+      <a href="#endpoints">Endpoints</a>
+      <a href="{{ docs_href }}">API Reference</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero">
+    <p class="eyebrow">Engineering Overview — {{ name }}</p>
+    <h1 class="title"><span class="drop">T</span>heosis</h1>
+    <p class="tagline">{{ details }}. A knowledge graph of Scripture, built so that <strong>every claim answers to a chapter and verse.</strong></p>
+
+    <div class="hero-actions">
+      <a class="btn primary" href="{{ docs_href }}">Open API Reference →</a>
+      <a class="btn ghost" href="#architecture">Read the architecture ↓</a>
+    </div>
+    <p class="status-line"><span class="status-dot"></span>backend online · schema v1 · review pipeline active</p>
+
+    <div class="graph-card">
+      <p class="cap">Fig. I — Nodes, Edges, and their Scripture</p>
+      <svg viewBox="0 0 820 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing Being and StorySlot nodes connected by relationship edges, each edge annotated with a scripture reference.">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#687A43"/>
+          </marker>
+        </defs>
+
+        <!-- edges -->
+        <path d="M 150 70 C 260 40, 320 40, 430 70" stroke="#687A43" stroke-width="1.4" fill="none" marker-end="url(#arrow)"/>
+        <path d="M 150 90 C 260 150, 320 150, 430 100" stroke="#687A43" stroke-width="1.4" fill="none" marker-end="url(#arrow)" stroke-dasharray="1,5" stroke-linecap="round"/>
+        <path d="M 480 90 C 550 130, 600 150, 660 150" stroke="#687A43" stroke-width="1.4" fill="none" marker-end="url(#arrow)"/>
+        <path d="M 150 90 C 100 170, 130 220, 220 250" stroke="#687A43" stroke-width="1.4" fill="none" marker-end="url(#arrow)" stroke-dasharray="1,5" stroke-linecap="round"/>
+        <path d="M 260 250 C 380 260, 420 220, 460 170" stroke="#687A43" stroke-width="1.4" fill="none" marker-end="url(#arrow)"/>
+
+        <!-- edge labels (relationship_type) -->
+        <text x="272" y="46" class="mono" font-size="11" fill="#4E5C33" font-family="IBM Plex Mono, monospace">leads</text>
+        <text x="255" y="128" class="mono" font-size="11" fill="#4E5C33" font-family="IBM Plex Mono, monospace">present_at</text>
+        <text x="555" y="122" class="mono" font-size="11" fill="#4E5C33" font-family="IBM Plex Mono, monospace">precedes</text>
+        <text x="115" y="185" class="mono" font-size="11" fill="#4E5C33" font-family="IBM Plex Mono, monospace">father_of</text>
+        <text x="355" y="252" class="mono" font-size="11" fill="#4E5C33" font-family="IBM Plex Mono, monospace">fulfills</text>
+
+        <!-- marginalia scripture refs -->
+        <text x="272" y="60" font-style="italic" font-size="10.5" fill="#315D8C" font-family="Source Serif 4, serif">Exod. 14:15–16</text>
+        <text x="255" y="142" font-style="italic" font-size="10.5" fill="#315D8C" font-family="Source Serif 4, serif">Exod. 12:1</text>
+        <text x="545" y="136" font-style="italic" font-size="10.5" fill="#315D8C" font-family="Source Serif 4, serif">Josh. 1:1</text>
+        <text x="95" y="199" font-style="italic" font-size="10.5" fill="#315D8C" font-family="Source Serif 4, serif">Exod. 2:1–2</text>
+        <text x="345" y="266" font-style="italic" font-size="10.5" fill="#315D8C" font-family="Source Serif 4, serif">Deut. 34:9</text>
+
+        <!-- nodes: being -->
+        <circle cx="130" cy="80" r="26" fill="#0B1220"/>
+        <text x="130" y="76" text-anchor="middle" fill="#F7F3EA" font-size="12" font-family="Fraunces, serif">Moses</text>
+        <text x="130" y="90" text-anchor="middle" fill="#A7B0BE" font-size="8" font-family="IBM Plex Mono, monospace">being</text>
+
+        <circle cx="230" cy="260" r="24" fill="#0B1220"/>
+        <text x="230" y="256" text-anchor="middle" fill="#F7F3EA" font-size="11" font-family="Fraunces, serif">Amram</text>
+        <text x="230" y="270" text-anchor="middle" fill="#A7B0BE" font-size="8" font-family="IBM Plex Mono, monospace">being</text>
+
+        <circle cx="460" cy="160" r="26" fill="#0B1220"/>
+        <text x="460" y="156" text-anchor="middle" fill="#F7F3EA" font-size="11" font-family="Fraunces, serif">Joshua</text>
+        <text x="460" y="170" text-anchor="middle" fill="#A7B0BE" font-size="8" font-family="IBM Plex Mono, monospace">being</text>
+
+        <!-- nodes: story_slot -->
+        <rect x="420" y="45" width="120" height="46" rx="3" fill="#0B1220"/>
+        <text x="480" y="65" text-anchor="middle" fill="#F7F3EA" font-size="11" font-family="Fraunces, serif">The Exodus</text>
+        <text x="480" y="78" text-anchor="middle" fill="#A7B0BE" font-size="8" font-family="IBM Plex Mono, monospace">story_slot</text>
+
+        <rect x="600" y="128" width="120" height="46" rx="3" fill="#0B1220"/>
+        <text x="660" y="148" text-anchor="middle" fill="#F7F3EA" font-size="11" font-family="Fraunces, serif">Conquest</text>
+        <text x="660" y="161" text-anchor="middle" fill="#A7B0BE" font-size="8" font-family="IBM Plex Mono, monospace">story_slot</text>
+
+        <!-- confidence marker -->
+        <g transform="translate(700, 40)">
+          <circle cx="0" cy="0" r="4" fill="none" stroke="#C9A227" stroke-width="1.2"/>
+          <text x="10" y="4" font-size="9.5" fill="#A7B0BE" font-family="IBM Plex Mono, monospace">confidence: confirmed</text>
+        </g>
+      </svg>
+      <p class="cap-foot">Every edge in this graph carries a relationship_type and a scripture_ref row — never free text.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="scope">
+    <div class="chapter-head"><span class="numeral">I</span><h2>Scope</h2></div>
+    <div class="chapter-body">
+      <p class="lede">Two weeks does not buy the full ontology in the PRD. It buys a graph engine generic enough that every later entity type is a data decision, not an architecture change — seeded with a thin, demo-able vertical slice.</p>
+      <div class="scope-grid">
+        <div class="scope-col in">
+          <h3>In this build</h3>
+          <ul>
+            <li>StorySlot and Being nodes, with Relationships as first-class edges</li>
+            <li>Scripture references resolved live, never stored as text</li>
+            <li>Being Journey — following a person through Scripture</li>
+            <li>Interactive knowledge graph view + timeline strip</li>
+            <li>AI draft → human review → publish pipeline</li>
+            <li>Keyword and semantic search over nodes</li>
+          </ul>
+        </div>
+        <div class="scope-col out">
+          <h3>Deferred, not designed-out</h3>
+          <ul>
+            <li>Place, Theme, Covenant, Kingdom, Prophecy — schema-ready, UI hidden</li>
+            <li>Multiple chronology models, scholarly-position confidence UI</li>
+            <li>Multi-user review, public contributions</li>
+            <li>Hebrew / Greek source integration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="architecture">
+    <div class="chapter-head"><span class="numeral">II</span><h2>Architecture</h2></div>
+    <div class="chapter-body">
+      <p>Three services, each replaceable on its own timeline. The frontend never talks to Postgres or the AI providers directly — everything routes through the API.</p>
+
+      <div class="flow">
+        <div class="flow-box">
+          <div class="name">Next.js</div>
+          <div class="sub">graph viz · journey · search</div>
+        </div>
+        <div class="arrow">⇄</div>
+        <div class="flow-box">
+          <div class="name">FastAPI</div>
+          <div class="sub">routers · AI pipeline · review</div>
+        </div>
+        <div class="arrow">⇄</div>
+        <div class="flow-box">
+          <div class="name">Postgres + pgvector</div>
+          <div class="sub">nodes · edges · scripture_refs</div>
+        </div>
+      </div>
+      <div class="flow-tail">
+        <div class="flow-box">
+          <div class="name">Bible API</div>
+          <div class="sub">resolves display text at read time</div>
+        </div>
+        <div class="flow-box">
+          <div class="name">LLM / Embedding providers</div>
+          <div class="sub">Anthropic · Gemini · OpenAI</div>
+        </div>
+      </div>
+
+      <p class="rule-note">Scripture text is never stored in this database. Only <span class="mono">(book, chapter, verse, translation)</span> tuples are persisted — the text itself is resolved on read, through a cache table, so a translation license or provider swap never touches stored data.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="data-model">
+    <div class="chapter-head"><span class="numeral">III</span><h2>Data Model</h2></div>
+    <div class="chapter-body">
+      <p>One generic <span class="mono">nodes</span> table with a type discriminator, one <span class="mono">edges</span> table for relationships, and a polymorphic <span class="mono">scripture_refs</span> table that both point back to. Adding Place or Covenant later is a product decision, not a migration.</p>
+
+      <div class="schema-grid">
+        <div class="schema-card">
+          <h4>nodes</h4>
+          <p>StorySlot, Being, and future entity types, discriminated by <span class="mono">type</span>, with type-specific fields in <span class="mono">data JSONB</span>.</p>
+          <code class="field">embedding VECTOR(1536) · confidence · review_status</code>
+        </div>
+        <div class="schema-card">
+          <h4>edges</h4>
+          <p>Relationships as their own rows, not foreign keys — so they can carry confidence, notes, and review state independently.</p>
+          <code class="field">source_id → target_id · relationship_type</code>
+        </div>
+        <div class="schema-card">
+          <h4>scripture_refs</h4>
+          <p>Polymorphic over node or edge. The enforcement mechanism for "where is this supported in Scripture?"</p>
+          <code class="field">entity_type · book · chapter_start · verse_start</code>
+        </div>
+        <div class="schema-card">
+          <h4>reviews</h4>
+          <p>Audit trail mirroring the draft → in_review → approved → published transitions, one row per decision.</p>
+          <code class="field">entity_id · status · reviewer · notes</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="ai-workflow">
+    <div class="chapter-head"><span class="numeral">IV</span><h2>AI Workflow</h2></div>
+    <div class="chapter-body">
+      <p>Any provider can generate a draft. None of them can publish one.</p>
+      <div class="pipeline">
+        <span class="pipe-step draft">draft</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step">in_review</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step">approved</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step published">published</span>
+      </div>
+      <p class="rule-note">The system prompt lives in one shared file, not duplicated per provider. Every claim — node field or relationship — must cite a specific (book, chapter, verse), and every returned reference is re-validated against the Bible API before insert, regardless of which model produced it.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="endpoints">
+    <div class="chapter-head"><span class="numeral">V</span><h2>Endpoints</h2></div>
+    <div class="chapter-body">
+      <p>The minimum surface that makes the above real. Full request/response shapes live in the API reference.</p>
+      <div class="endpoint-list">
+        <div class="endpoint"><span class="verb get">GET</span><span class="path">/nodes?type=being&amp;search=</span><span class="desc">list and filter</span></div>
+        <div class="endpoint"><span class="verb get">GET</span><span class="path">/nodes/{id}</span><span class="desc">node with edges and scripture, expanded</span></div>
+        <div class="endpoint"><span class="verb post">POST</span><span class="path">/nodes</span><span class="desc">create as draft</span></div>
+        <div class="endpoint"><span class="verb get">GET</span><span class="path">/nodes/{id}/journey</span><span class="desc">Being Journey traversal</span></div>
+        <div class="endpoint"><span class="verb post">POST</span><span class="path">/ai/draft</span><span class="desc">generate a structured draft from a topic</span></div>
+        <div class="endpoint"><span class="verb post">POST</span><span class="path">/reviews/{id}/approve</span><span class="desc">draft → published</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="roadmap">
+    <div class="chapter-head"><span class="numeral">VI</span><h2>Build Plan</h2></div>
+    <div class="chapter-body">
+      <div class="roadmap">
+        <div class="week">
+          <div class="wk-label">Week One — Graph Engine</div>
+          <ul>
+            <li>Schema + Alembic migration, CRUD on nodes/edges</li>
+            <li>Bible API integration + cache table</li>
+            <li>AI draft pipeline, seeded across Genesis–Exodus</li>
+            <li>Review endpoints + minimal approval flow</li>
+          </ul>
+        </div>
+        <div class="week">
+          <div class="wk-label">Week Two — Surface + Launch</div>
+          <ul>
+            <li>Being Journey page, live scripture rendering</li>
+            <li>Graph explorer (React Flow), timeline strip</li>
+            <li>Keyword then semantic search</li>
+            <li>Deploy, bug bash, demo path, launch</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>{{ name }} · schema v1</span>
+  <span><a href="{{ docs_href }}">OpenAPI reference →</a></span>
+</footer>
+
+</body>
+</html>
