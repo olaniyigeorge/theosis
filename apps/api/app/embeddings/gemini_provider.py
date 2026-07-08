@@ -1,5 +1,5 @@
 from google import genai
-from google.genai import types
+from google import types
 from .base import EmbeddingProvider, EmbeddingResult
 
 class GeminiEmbeddingProvider(EmbeddingProvider):
