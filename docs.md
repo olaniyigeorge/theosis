@@ -1,4 +1,4 @@
-# Theosis — Engineering Docs (MVP, 2-Week Build)
+# Theosis - Engineering Docs (MVP, 2-Week Build)
 
 Stack locked in: **Python (FastAPI) + Postgres/pgvector + Next.js/React**. Dev on Vercel + Railway/Render, prod later on GCP or AWS. This doc translates the PRD into a buildable system and a day-by-day plan.
 
