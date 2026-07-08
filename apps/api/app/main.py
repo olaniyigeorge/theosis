@@ -5,7 +5,12 @@ from fastapi.staticfiles import StaticFiles
 
 from config import settings
 
-app = FastAPI(title="Theosis API")
+app = FastAPI(
+    title="Theosis API", 
+    docs_url="/api/docs", 
+    redoc_url="/api/redoc", 
+    openapi_url="/api/openapi.json"
+)
 
 
 
