@@ -5,7 +5,7 @@ from .base import EmbeddingProvider, EmbeddingResult
 class GeminiEmbeddingProvider(EmbeddingProvider):
     provider_name = "gemini"
     model_name = "gemini-embedding-001"
-    dimension = 1536   # truncated via output_dimensionality — must match OpenAI's dim
+    dimension = 1536   # truncated via output_dimensionality - must match OpenAI's dim
 
     def __init__(self, api_key: str):
         self.client = genai.Client(api_key=api_key)

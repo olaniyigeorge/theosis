@@ -53,7 +53,7 @@ fi
 ) &
 BACKEND_PID=$!
 
-# --- Frontend (disabled for now — backend-only dev) ---
+# --- Frontend (disabled for now - backend-only dev) ---
 echo -e "${YELLOW}Starting frontend...${NC}"
 
 if [ ! -d "$FRONTEND_DIR/node_modules" ]; then

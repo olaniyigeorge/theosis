@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>{{ name }} — Engineering Overview</title>
+<title>{{ name }} - Engineering Overview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,6 +30,7 @@
     font-family:'Source Serif 4', serif;
     font-size:17px;
     line-height:1.65;
+    padding-bottom: 20px;
   }
   ::selection{ background:var(--verdigris-dim); color:var(--parchment); }
 
@@ -394,9 +395,9 @@
 <main class="wrap" id="top">
 
   <section class="hero">
-    <p class="eyebrow">Engineering Overview — {{ name }}</p>
+    <p class="eyebrow">Engineering Overview - {{ name }}</p>
     <h1 class="title"><span class="drop">T</span>heosis</h1>
-    <p class="tagline">{{ details }}. A knowledge graph of Scripture, built so that <strong>every claim answers to a chapter and verse.</strong></p>
+    <p class="tagline">{{ details }}. A knowledge graph of Scripture, built so that <strong>every claim answers to a section of the scriptions(chapter and verse).</strong></p>
 
     <div class="hero-actions">
       <a class="btn primary" href="{{ docs_href }}">Open API Reference →</a>
@@ -405,7 +406,7 @@
     <p class="status-line"><span class="status-dot"></span>backend online · schema v1 · review pipeline active</p>
 
     <div class="graph-card">
-      <p class="cap">Fig. I — Nodes, Edges, and their Scripture</p>
+      <p class="cap">Fig. I - Nodes, Edges, and their Scripture</p>
       <svg viewBox="0 0 820 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing Being and StorySlot nodes connected by relationship edges, each edge annotated with a scripture reference.">
         <defs>
           <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
@@ -462,21 +463,21 @@
           <text x="10" y="4" font-size="9.5" fill="#A7B0BE" font-family="IBM Plex Mono, monospace">confidence: confirmed</text>
         </g>
       </svg>
-      <p class="cap-foot">Every edge in this graph carries a relationship_type and a scripture_ref row — never free text.</p>
+      <p class="cap-foot">Every edge in this graph carries a relationship_type and a scripture_ref row - never free text.</p>
     </div>
   </section>
 
   <section class="chapter" id="scope">
     <div class="chapter-head"><span class="numeral">I</span><h2>Scope</h2></div>
     <div class="chapter-body">
-      <p class="lede">Two weeks does not buy the full ontology in the PRD. It buys a graph engine generic enough that every later entity type is a data decision, not an architecture change — seeded with a thin, demo-able vertical slice.</p>
+      <p class="lede">Two weeks does not buy the full ontology in the PRD. It buys a graph engine generic enough that every later entity type is a data decision, not an architecture change - seeded with a thin, demo-able vertical slice.</p>
       <div class="scope-grid">
         <div class="scope-col in">
           <h3>In this build</h3>
           <ul>
             <li>StorySlot and Being nodes, with Relationships as first-class edges</li>
             <li>Scripture references resolved live, never stored as text</li>
-            <li>Being Journey — following a person through Scripture</li>
+            <li>Being Journey - following a person through Scripture</li>
             <li>Interactive knowledge graph view + timeline strip</li>
             <li>AI draft → human review → publish pipeline</li>
             <li>Keyword and semantic search over nodes</li>
@@ -485,7 +486,7 @@
         <div class="scope-col out">
           <h3>Deferred, not designed-out</h3>
           <ul>
-            <li>Place, Theme, Covenant, Kingdom, Prophecy — schema-ready, UI hidden</li>
+            <li>Place, Theme, Covenant, Kingdom, Prophecy - schema-ready, UI hidden</li>
             <li>Multiple chronology models, scholarly-position confidence UI</li>
             <li>Multi-user review, public contributions</li>
             <li>Hebrew / Greek source integration</li>
@@ -498,7 +499,7 @@
   <section class="chapter" id="architecture">
     <div class="chapter-head"><span class="numeral">II</span><h2>Architecture</h2></div>
     <div class="chapter-body">
-      <p>Three services, each replaceable on its own timeline. The frontend never talks to Postgres or the AI providers directly — everything routes through the API.</p>
+      <p>Three services, each replaceable on its own timeline. The frontend never talks to Postgres or the AI providers directly - everything routes through the API.</p>
 
       <div class="flow">
         <div class="flow-box">
@@ -527,14 +528,14 @@
         </div>
       </div>
 
-      <p class="rule-note">Scripture text is never stored in this database. Only <span class="mono">(book, chapter, verse, translation)</span> tuples are persisted — the text itself is resolved on read, through a cache table, so a translation license or provider swap never touches stored data.</p>
+      <p class="rule-note">Scripture text is never stored in this database. Only <span class="mono">(book, chapter, verse, translation)</span> tuples are persisted - the text itself is resolved on read, through a cache table, so a translation license or provider swap never touches stored data.</p>
     </div>
   </section>
 
   <section class="chapter" id="data-model">
     <div class="chapter-head"><span class="numeral">III</span><h2>Data Model</h2></div>
     <div class="chapter-body">
-      <p>One generic <span class="mono">nodes</span> table with a type discriminator, one <span class="mono">edges</span> table for relationships, and a polymorphic <span class="mono">scripture_refs</span> table that both point back to. Adding Place or Covenant later is a product decision, not a migration.</p>
+      <p>One generic <span class="mono">nodes</span> table with a type discriminator, one <span class="mono">edges</span> table for relationships, and a polymorphic <span class="mono">scripture_refs</span> table that both point back to. Adding Place or Covenant later will be a product decision, not a migration.</p>
 
       <div class="schema-grid">
         <div class="schema-card">
@@ -544,7 +545,7 @@
         </div>
         <div class="schema-card">
           <h4>edges</h4>
-          <p>Relationships as their own rows, not foreign keys — so they can carry confidence, notes, and review state independently.</p>
+          <p>Relationships as their own rows, not foreign keys - so they can carry confidence, notes, and review state independently.</p>
           <code class="field">source_id → target_id · relationship_type</code>
         </div>
         <div class="schema-card">
@@ -571,7 +572,7 @@
         <span class="pipe-step">approved</span><span class="pipe-arrow">→</span>
         <span class="pipe-step published">published</span>
       </div>
-      <p class="rule-note">The system prompt lives in one shared file, not duplicated per provider. Every claim — node field or relationship — must cite a specific (book, chapter, verse), and every returned reference is re-validated against the Bible API before insert, regardless of which model produced it.</p>
+      <p class="rule-note">The system prompt lives in one shared file, not duplicated per provider. Every claim - node field or relationship - must cite a specific (book, chapter, verse), and every returned reference is re-validated against the Bible API before insert, regardless of which model produced it.</p>
     </div>
   </section>
 
@@ -595,7 +596,7 @@
     <div class="chapter-body">
       <div class="roadmap">
         <div class="week">
-          <div class="wk-label">Week One — Graph Engine</div>
+          <div class="wk-label">Week One - Graph Engine</div>
           <ul>
             <li>Schema + Alembic migration, CRUD on nodes/edges</li>
             <li>Bible API integration + cache table</li>
@@ -604,7 +605,7 @@
           </ul>
         </div>
         <div class="week">
-          <div class="wk-label">Week Two — Surface + Launch</div>
+          <div class="wk-label">Week Two - Surface + Launch</div>
           <ul>
             <li>Being Journey page, live scripture rendering</li>
             <li>Graph explorer (React Flow), timeline strip</li>
@@ -624,4 +625,4 @@
 </footer>
 
 </body>
-</html>Open API Reference →
+</html>
