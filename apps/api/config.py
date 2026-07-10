@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
     BIBLE_API_BASE_URL: str = "https://bible-api.com"
     ADMIN_TOKEN: str = ""
+    REDIS_URL: str = "redis://localhost:6379/0"
 
     class Config:
         env_file = ".env"

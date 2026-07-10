@@ -1,9 +1,49 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+import sqlalchemy
 
 from config import settings
+from .utils.logger import logger
+from .db import db_manager
+from .infra.redis import redis_manager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Application startup...")
+    app.state.redis = None
+
+    try:
+        engine_kwargs = {}
+        if "sqlite" in settings.DATABASE_URL:
+            engine_kwargs.update({
+                "connect_args": {"check_same_thread": False},
+                "poolclass": sqlalchemy.StaticPool,
+            })
+
+        db_manager.initialize(settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1), **engine_kwargs)
+        await db_manager.create_tables()
+
+        app.state.redis = await redis_manager.initialize(
+            url=settings.REDIS_URL,
+            decode_responses=True,
+        )
+
+        logger.info("Application startup complete")
+        yield
+
+    except Exception as e:
+        logger.error(f"Startup failed: {e}")
+        raise
+
+    finally:
+        await redis_manager.close()
+        await db_manager.close()
+        logger.info("Application shutdown complete")
+
 
 app = FastAPI(
     title="Theosis API", 
