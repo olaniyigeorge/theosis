@@ -7,6 +7,14 @@ class NodeType(str, enum.Enum):
     STORY_SLOT = "story_slot"
     BEING = "being"
 
+class ConfidenceLevel(str, enum.Enum):
+    CONFIRMED = "confirmed"
+    STRONG = "strong"
+    MODERATE = "moderate"
+    WEAK = "weak"
+    APPROXIMATE = "approximate"
+    MULTIPLE_POSITIONS = "multiple_positions"
+    UNKNOWN = "unknown"
 
 class ReviewStatus(str, enum.Enum):
     DRAFT = "draft"

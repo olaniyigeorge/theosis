@@ -5,11 +5,14 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import sqlalchemy
+import uvicorn
 
 from config import settings
 from .utils.logger import logger
-from .db import db_manager
+from .db.index import db_manager
 from .infra.redis import redis_manager
+from .routers.index import router_list
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -49,12 +52,14 @@ app = FastAPI(
     title="Theosis API", 
     docs_url="/api/docs", 
     redoc_url="/api/redoc", 
-    openapi_url="/api/openapi.json"
+    openapi_url="/api/openapi.json",
+    lifespan=lifespan
 )
 
 
-
-
+# --- Routers ---
+for router in router_list:
+    app.include_router(router)
 
 
 # --- Static & Templates ---
@@ -83,3 +88,7 @@ async def home(request: Request):
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", reload=True)

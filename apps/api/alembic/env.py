@@ -86,8 +86,8 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from config import settings
-from app.models.base import Base
-import app.models  # Imports all mapped models into Base.metadata
+from apps.api.app.db.models.base import Base
+import apps.api.app.db.models  # Imports all mapped models into Base.metadata
 
 
 config = context.config

@@ -13,7 +13,7 @@ from sqlalchemy.orm import declarative_base
 
 from .models.base import Base
 
-from .utils.logger import logger
+from ..utils.logger import logger
 
 
 class DatabaseManager:
