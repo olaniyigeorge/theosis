@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -m
 
 # Colors
 GREEN='\033[0;32m'
@@ -10,12 +11,12 @@ NC='\033[0m'
 # Resolve project root (wherever the script is called from)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-BACKEND_DIR="$PROJECT_ROOT/apps/backend"
-FRONTEND_DIR="$PROJECT_ROOT/apps/frontend"
+API_DIR="$PROJECT_ROOT/apps/api"
+WEB_DIR="$PROJECT_ROOT/apps/web"
 
-echo -e "${GREEN}Starting CoopWise dev environment...${NC}"
+echo -e "${GREEN}Starting Theosis dev environment...${NC}"
 
-# --- Start Postgres ---
+# --- Start Postgres (pgvector) ---
 echo -e "${YELLOW}Starting PostgreSQL...${NC}"
 if ! pg_isready -q 2>/dev/null; then
   pg_ctlcluster 16 main start
@@ -35,40 +36,40 @@ fi
 
 echo -e "${GREEN}Postgres and Redis are up.${NC}"
 
-# --- Backend ---
-echo -e "${YELLOW}Starting backend...${NC}"
+# --- API (FastAPI) ---
+echo -e "${YELLOW}Starting API...${NC}"
 
-if [ ! -d "$BACKEND_DIR/venv" ]; then
+if [ ! -d "$API_DIR/venv" ]; then
   echo "No venv found, creating one..."
-  python3 -m venv "$BACKEND_DIR/venv"
-  "$BACKEND_DIR/venv/bin/pip" install -r "$BACKEND_DIR/requirements.txt"
+  python3 -m venv "$API_DIR/.venv"
+  "$API_DIR/venv/bin/pip" install -r "$API_DIR/requirements.txt"
 fi
 
 (
-  cd "$BACKEND_DIR" && \
-  "$BACKEND_DIR/venv/bin/uvicorn" main:app \
+  cd "$API_DIR" && \
+  "$API_DIR/.venv/bin/uvicorn" app.main:app \
     --host 0.0.0.0 \
     --port 8000 \
     --reload
 ) &
-BACKEND_PID=$!
+API_PID=$!
 
-# --- Frontend (disabled for now - backend-only dev) ---
-echo -e "${YELLOW}Starting frontend...${NC}"
+# --- Web (Next.js) ---
+echo -e "${YELLOW}Starting web...${NC}"
 
-if [ ! -d "$FRONTEND_DIR/node_modules" ]; then
+if [ ! -d "$WEB_DIR/node_modules" ]; then
   echo "node_modules not found, running npm install..."
-  npm --prefix "$FRONTEND_DIR" install
+  npm --prefix "$WEB_DIR" install
 fi
 
-npm --prefix "$FRONTEND_DIR" run dev &
-FRONTEND_PID=$!
+npm --prefix "$WEB_DIR" run dev &
+WEB_PID=$!
 
 echo -e "${GREEN}
 ====================================
-  CoopWise is running!
-  Backend:  http://localhost:8000
-  Frontend: http://localhost:3000
+  Theosis is running!
+  API:      http://localhost:8000
+  Web:      http://localhost:3000
   API Docs: http://localhost:8000/docs
 ====================================
 ${NC}"
@@ -76,9 +77,8 @@ ${NC}"
 # --- Cleanup on Ctrl+C ---
 cleanup() {
   echo -e "\n${RED}Shutting down...${NC}"
-  kill $BACKEND_PID 2>/dev/null
-  kill $FRONTEND_PID 2>/dev/null
-  echo -e "${YELLOW}Stopping Redis...${NC}"
+  kill -- -$API_PID 2>/dev/null
+  kill -- -$WEB_PID 2>/dev/null
   redis-cli shutdown 2>/dev/null || true
   echo -e "${GREEN}All services stopped. (Postgres left running)${NC}"
 }
