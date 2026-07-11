@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from pgvector.sqlalchemy import HALFVEC, Vector
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import DateTime, Enum as PgEnum, Index, String, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -29,7 +29,7 @@ class EmbeddingMixin:
 class EmbeddingOpenAI(EmbeddingMixin, Base):
     __tablename__ = "embeddings_openai"
 
-    embedding: Mapped[list[float]] = mapped_column(HALFVEC(1536), nullable=False)
+    embedding: Mapped[list[float]] = mapped_column(Vector(1536), nullable=False)
 
     __table_args__ = (
         UniqueConstraint("entity_type", "entity_id", "model", name="uq_embeddings_openai_entity_model"),
@@ -38,7 +38,7 @@ class EmbeddingOpenAI(EmbeddingMixin, Base):
             "embedding",
             postgresql_using="hnsw",
             postgresql_with={"m": 16, "ef_construction": 64},
-            postgresql_ops={"embedding": "halfvec_cosine_ops"},
+            postgresql_ops={"embedding": "vector_cosine_ops"}, # halfvec_cosine_ops
         ),
     )
 

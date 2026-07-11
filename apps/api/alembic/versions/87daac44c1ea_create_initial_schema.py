@@ -37,7 +37,7 @@ def upgrade() -> None:
     )
     op.create_index('ix_embeddings_gemini_hnsw', 'embeddings_gemini', ['embedding'], unique=False, postgresql_using='hnsw', postgresql_with={'m': 16, 'ef_construction': 64}, postgresql_ops={'embedding': 'vector_cosine_ops'})
     op.create_table('embeddings_openai',
-    sa.Column('embedding', pgvector.sqlalchemy.halfvec.HALFVEC(dim=1536), nullable=False),
+    sa.Column('embedding', pgvector.sqlalchemy.vector.VECTOR(dim=1536), nullable=False),
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('entity_type', sa.Enum('NODE', 'EDGE', name='scripture_entity_type'), nullable=False),
     sa.Column('entity_id', sa.UUID(), nullable=False),
@@ -48,7 +48,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('entity_type', 'entity_id', 'model', name='uq_embeddings_openai_entity_model')
     )
-    op.create_index('ix_embeddings_openai_hnsw', 'embeddings_openai', ['embedding'], unique=False, postgresql_using='hnsw', postgresql_with={'m': 16, 'ef_construction': 64}, postgresql_ops={'embedding': 'halfvec_cosine_ops'})
+    op.create_index('ix_embeddings_openai_hnsw', 'embeddings_openai', ['embedding'], unique=False, postgresql_using='hnsw', postgresql_with={'m': 16, 'ef_construction': 64}, postgresql_ops={'embedding': 'vector_cosine_ops'})
     op.create_table('nodes',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('type', sa.Enum('STORY_SLOT', 'BEING', name='node_type'), nullable=False),
@@ -127,7 +127,7 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_nodes_review_status'), table_name='nodes')
     op.drop_index('ix_nodes_data_gin', table_name='nodes', postgresql_using='gin')
     op.drop_table('nodes')
-    op.drop_index('ix_embeddings_openai_hnsw', table_name='embeddings_openai', postgresql_using='hnsw', postgresql_with={'m': 16, 'ef_construction': 64}, postgresql_ops={'embedding': 'halfvec_cosine_ops'})
+    op.drop_index('ix_embeddings_openai_hnsw', table_name='embeddings_openai', postgresql_using='hnsw', postgresql_with={'m': 16, 'ef_construction': 64}, postgresql_ops={'embedding': 'vector_cosine_ops'})
     op.drop_table('embeddings_openai')
     op.drop_index('ix_embeddings_gemini_hnsw', table_name='embeddings_gemini', postgresql_using='hnsw', postgresql_with={'m': 16, 'ef_construction': 64}, postgresql_ops={'embedding': 'vector_cosine_ops'})
     op.drop_table('embeddings_gemini')

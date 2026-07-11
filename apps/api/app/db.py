@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import declarative_base
 
-from apps.api.app.models.base import Base
+from .models.base import Base
 
 from .utils.logger import logger
 
