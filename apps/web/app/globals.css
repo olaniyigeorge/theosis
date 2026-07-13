@@ -64,7 +64,7 @@ header.top {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(27, 31, 43, 0.88);
+  background: #1b1f2be0;
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
 }
