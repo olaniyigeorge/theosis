@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     BIBLE_API_BASE_URL: str = "https://bible-api.com"
     ADMIN_TOKEN: str = ""
     REDIS_URL: str = "redis://localhost:6379/0"
+    OPENROUTER_API_KEY: str = ""
 
     class Config:
         env_file = ".env"

@@ -1,3 +1,11 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+  "python.defaultInterpreterPath": "${workspaceFolder}/apps/api/.venv/bin/python",
+
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/apps/api"
+  ],
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "cadence.flowCommand": "flow"
 }
