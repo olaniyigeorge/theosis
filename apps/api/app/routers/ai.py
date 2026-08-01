@@ -7,6 +7,16 @@ from app.db.dependencies import get_async_db_session
 from app.schemas.ai_draft import AIDraftRequest, AIDraftResponse
 from app.services.ai_drafts import AIDraftGenerationError, AIDraftService
 
+
+
+from app.schemas.scripture_advice import ScriptureAdviceRequest, ScriptureAdviceResponse
+from app.services.scripture_advice_service import (
+    ScriptureAdviceGenerationError,
+    ScriptureAdviceService,
+)
+
+
+
 router = APIRouter(prefix="/ai", tags=["ai"])
 
 
@@ -20,6 +30,20 @@ async def create_ai_draft(
     try:
         return await service.generate_and_create(payload)
     except AIDraftGenerationError as error:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(error),
+        ) from error
+
+
+
+
+@router.post("/advice", response_model=ScriptureAdviceResponse, status_code=status.HTTP_200_OK)
+async def get_scripture_advice(payload: ScriptureAdviceRequest) -> ScriptureAdviceResponse:
+    service = ScriptureAdviceService()
+    try:
+        return await service.get_advice(payload.query)
+    except ScriptureAdviceGenerationError as error:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=str(error),
