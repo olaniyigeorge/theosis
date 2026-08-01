@@ -114,3 +114,63 @@ def get_bible_provider() -> BibleProvider:
     I don't have main.py's content, so I haven't wired that up.
     """
     return BibleProvider()
+
+
+if __name__ == "__main__":
+    # Manual smoke test — hits the real bible-api.com. Run with:
+    #   python -m app.services.bible_provider
+    # from apps/api (no ".py" suffix on the module path, and not
+    # `python app/services/bible_provider.py` — that path form never puts
+    # `app/` on sys.path and `from app.shared...` will fail).
+    #
+    # Guarded behind __name__ == "__main__" deliberately: this module gets
+    # imported by other services (e.g. node_service.py) -> imported by the
+    # app on every boot, so any module-level code here (not inside this
+    # block) — including a bare top-level `await`, which is a SyntaxError
+    # outside async def anyway — would run/fail on every startup.
+    import asyncio
+
+    async def _main() -> None:
+        provider = get_bible_provider()
+        try:
+            print("\n--- get_passage: single verse ---\n")
+            verse = await provider.get_passage("john 3:16")
+            print(verse)
+
+            print("\n--- get_passage: verse range ---\n")
+            passage = await provider.get_passage("john 3:16-18")
+            print(passage)
+
+            print("\n--- get_passage: whole chapter via reference lookup ---\n")
+            # get_passage takes any reference string bible-api.com accepts —
+            # a bare "john 3" (no verse) returns the whole chapter through
+            # the *reference* endpoint, which is a different response shape
+            # (BiblePassage: reference/verses/text) than get_chapter below
+            # (BibleChapter: translation/verses) even though both return
+            # "all of John 3" — they're two different upstream endpoints.
+            chapter_via_reference = await provider.get_passage("john 3")
+            print(f"{len(chapter_via_reference.verses)} verses")
+
+            print("\n--- get_passage: different translation ---\n")
+            kjv_verse = await provider.get_passage("john 3:16", translation="kjv")
+            print(kjv_verse.translation_name)
+
+            print("\n--- get_chapter: same chapter via the /data endpoint ---\n")
+            chapter = await provider.get_chapter("jhn", 3)
+            print(f"{len(chapter.verses)} verses, translation={chapter.translation.identifier}")
+
+            print("\n--- get_random_verse: unscoped ---\n")
+            rand_verse = await provider.get_random_verse()
+            print(rand_verse)
+
+            print("\n--- get_random_verse: scoped to the Gospels ---\n")
+            rand_gospel_verse = await provider.get_random_verse(book_ids="MAT,MRK,LUK,JHN")
+            print(rand_gospel_verse)
+
+            print("\n--- get_random_verse: scoped to OT/NT shorthand ---\n")
+            rand_nt_verse = await provider.get_random_verse(book_ids="NT")
+            print(rand_nt_verse)
+        finally:
+            await provider.aclose()
+
+    asyncio.run(_main())
