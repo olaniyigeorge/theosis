@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     EMBEDDING_PROVIDER: str = "openai"
     EMBEDDING_DIMENSION: int = 1536
-    LLM_PROVIDER: str = "anthropic"
+    LLM_PROVIDER: str = "openrouter"
     OPENAI_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
