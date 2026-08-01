@@ -6,6 +6,7 @@ import enum
 class NodeType(str, enum.Enum):
     STORY_SLOT = "story_slot"
     BEING = "being"
+    REFLECTION = "reflection" 
 
 class ConfidenceLevel(str, enum.Enum):
     CONFIRMED = "confirmed"
