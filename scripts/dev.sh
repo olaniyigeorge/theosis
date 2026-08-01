@@ -39,10 +39,10 @@ echo -e "${GREEN}Postgres and Redis are up.${NC}"
 # --- API (FastAPI) ---
 echo -e "${YELLOW}Starting API...${NC}"
 
-if [ ! -d "$API_DIR/venv" ]; then
+if [ ! -d "$API_DIR/.venv" ]; then
   echo "No venv found, creating one..."
   python3 -m venv "$API_DIR/.venv"
-  "$API_DIR/venv/bin/pip" install -r "$API_DIR/requirements.txt"
+  "$API_DIR/.venv/bin/pip" install -r "$API_DIR/requirements.txt"
 fi
 
 (
