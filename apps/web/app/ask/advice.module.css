@@ -1,0 +1,329 @@
+/* Reuses the Theosis token set (ink / parchment / gold / verdigris / rubric)
+   and the Fraunces + Source Serif 4 + IBM Plex Mono pairing established on
+   the engineering-overview page, so /advice reads as the same product. */
+
+.page {
+  min-height: 100dvh;
+  background: var(--ink, #0b1220);
+  color: var(--parchment, #f7f3ea);
+  font-family: "Source Serif 4", serif;
+  padding: 56px 20px 96px;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--verdigris, #687a43);
+  margin: 0 0 14px;
+}
+
+.title {
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1.05;
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  color: var(--ink-soft, #a7b0be);
+  font-style: italic;
+  max-width: 52ch;
+  margin: 0 0 40px;
+}
+
+/* ---------- form ---------- */
+.form {
+  background: var(--parchment, #f7f3ea);
+  border-radius: 3px;
+  padding: 28px 28px 20px;
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+}
+
+.formLabel {
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--verdigris-dim, #4e5c33);
+  margin-bottom: 10px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 104px;
+  resize: vertical;
+  border: 1px solid rgba(11, 18, 32, 0.18);
+  border-radius: 2px;
+  background: #fff;
+  color: var(--ink, #0b1220);
+  font-family: "Source Serif 4", serif;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  padding: 14px 16px;
+}
+
+.textarea:focus-visible {
+  outline: 2px solid var(--gold, #c9a227);
+  outline-offset: 2px;
+}
+
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.counter {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  color: #5b6472;
+}
+
+.counter.overLimit {
+  color: #a3402f;
+}
+
+.submit {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  background: var(--gold, #c9a227);
+  color: var(--ink, #0b1220);
+  border: none;
+  border-radius: 2px;
+  padding: 12px 22px;
+  cursor: pointer;
+}
+
+.submit:hover:not(:disabled) {
+  background: #dbb94a;
+}
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- staged loading ---------- */
+.stages {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft, #a7b0be);
+}
+
+.stageDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-soft, #a7b0be);
+  flex-shrink: 0;
+}
+
+.stage.active {
+  color: var(--rubric, #315d8c);
+}
+
+.stage.active .stageDot {
+  background: var(--rubric, #315d8c);
+  border-color: var(--rubric, #315d8c);
+  box-shadow: 0 0 0 3px rgba(49, 93, 140, 0.18);
+}
+
+.stage.done {
+  color: var(--verdigris, #687a43);
+}
+
+.stage.done .stageDot {
+  background: var(--verdigris, #687a43);
+  border-color: var(--verdigris, #687a43);
+}
+
+/* ---------- error ---------- */
+.error {
+  margin-top: 24px;
+  border-left: 2px solid var(--rubric, #315d8c);
+  background: rgba(49, 93, 140, 0.08);
+  padding: 14px 18px;
+  border-radius: 0 2px 2px 0;
+}
+
+.errorTitle {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rubric, #315d8c);
+  margin: 0 0 6px;
+}
+
+.errorBody {
+  margin: 0;
+  color: var(--parchment, #f7f3ea);
+  font-size: 0.94rem;
+}
+
+.retry {
+  margin-top: 12px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  background: none;
+  border: 1px solid var(--rubric, #315d8c);
+  color: var(--rubric, #315d8c);
+  border-radius: 2px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+/* ---------- exchange (Q + advice + citations) ---------- */
+.exchanges {
+  margin-top: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.exchange {
+  border-top: 1px solid var(--line, rgba(42, 52, 72, 0.7));
+  padding-top: 24px;
+}
+
+.question {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft, #a7b0be);
+  margin: 0 0 14px;
+}
+
+.question::before {
+  content: "Q · ";
+  color: var(--gold, #c9a227);
+}
+
+.adviceCard {
+  background: var(--ink-2, #172033);
+  border: 1px solid var(--line, rgba(42, 52, 72, 0.7));
+  border-radius: 2px;
+  padding: 22px 24px;
+}
+
+.adviceText {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--parchment, #f7f3ea);
+  white-space: pre-wrap;
+}
+
+.citationsHeading {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--verdigris, #687a43);
+  margin: 22px 0 10px;
+}
+
+.citationsEmpty {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  color: var(--ink-soft, #a7b0be);
+  font-style: italic;
+}
+
+.citationList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.citation {
+  border: 1px solid var(--line, rgba(42, 52, 72, 0.7));
+  border-radius: 2px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.citationSummary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.citationSummary::-webkit-details-marker {
+  display: none;
+}
+
+.citationRef {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+  color: var(--parchment, #f7f3ea);
+  font-weight: 600;
+}
+
+.citationTranslation {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  color: var(--ink-soft, #a7b0be);
+}
+
+.verifiedTag {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--verdigris, #687a43);
+}
+
+.verifiedTag::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--verdigris, #687a43);
+}
+
+.citationText {
+  padding: 0 14px 16px;
+  margin: 0;
+  font-style: italic;
+  color: var(--ink-soft, #a7b0be);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stageDot,
+  .submit {
+    transition: none;
+  }
+}
