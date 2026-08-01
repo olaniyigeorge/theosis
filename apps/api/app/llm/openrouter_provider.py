@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 
 from openrouter import OpenRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from app.shared.exceptions import LLMGenerationError
 from .base import LLMProvider
@@ -53,10 +53,12 @@ def _to_strict_json_schema(schema: dict) -> dict:
 
 class OpenRouterLLMProvider(LLMProvider):
     provider_name = "openrouter"
+    MAX_STRUCTURED_ATTEMPTS = 2
 
-    def __init__(self, api_key: str, model: str = "openai/gpt-4o-mini"):
+    def __init__(self, api_key: str, model: str = "qwen/qwen3.7-flash"): # wen/qwen3.7-flash
         self.client = OpenRouter(api_key=api_key)
         self.model = model
+
 
     async def generate_structured(
         self,
@@ -64,42 +66,76 @@ class OpenRouterLLMProvider(LLMProvider):
         user_prompt: str,
         response_model: type[BaseModel],
     ) -> dict:
-        result = await self.client.chat.send_async(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"{system_prompt}\n\nRespond with a JSON object only.",
-                },
-                {"role": "user", "content": user_prompt},
-            ],
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "name": response_model.__name__,
-                    "schema": _to_strict_json_schema(response_model.model_json_schema()),
-                    "strict": True,
-                },
+        messages = [
+            {"role": "system", "content": f"{system_prompt}\n\nRespond with a JSON object only."},
+            {"role": "user", "content": user_prompt},
+        ]
+        response_format = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": response_model.__name__,
+                "schema": _to_strict_json_schema(response_model.model_json_schema()),
+                "strict": True,
             },
+        }
+
+        last_error: Exception | None = None
+
+        for attempt in range(1, self.MAX_STRUCTURED_ATTEMPTS + 1):
+            result = await self.client.chat.send_async(
+                model=self.model,
+                messages=messages,
+                response_format=response_format,
+            )
+
+            if not result.choices:
+                last_error = LLMGenerationError("OpenRouter returned no choices")
+                continue
+
+            content = _extract_text(result.choices[0].message.content)
+            if content is None:
+                last_error = LLMGenerationError("OpenRouter returned no text content")
+                continue
+
+            try:
+                parsed = json.loads(content)
+            except json.JSONDecodeError as exc:
+                last_error = exc
+                messages += [
+                    {"role": "assistant", "content": content},
+                    {"role": "user", "content": f"That was not valid JSON ({exc}). Respond again with a single valid JSON object only."},
+                ]
+                continue
+
+            # Validate against the real schema — json.loads succeeding isn't
+            # enough, since some routed models ignore `strict` and return
+            # their own shape (this is what happened with qwen3.7-flash).
+            try:
+                validated = response_model.model_validate(parsed)
+            except ValidationError as exc:
+                last_error = exc
+                messages += [
+                    {"role": "assistant", "content": content},
+                    {"role": "user", "content": (
+                        f"That JSON didn't match the required schema. Validation error: {exc}\n\n"
+                        f"Respond again with a single JSON object matching this schema exactly: "
+                        f"{response_format['json_schema']['schema']}"
+                    )},
+                ]
+                continue
+
+            return validated.model_dump(mode="json")
+
+        raise LLMGenerationError(
+            f"OpenRouter failed to produce schema-conformant output for "
+            f"{response_model.__name__} after {self.MAX_STRUCTURED_ATTEMPTS} attempts: {last_error}"
         )
-
-        if not result.choices:
-            raise LLMGenerationError("OpenRouter returned no choices")
-
-        content = _extract_text(result.choices[0].message.content)
-        if content is None:
-            raise LLMGenerationError("OpenRouter returned no text content")
-
-        # json.loads here (not response_model.model_validate_json) to stay
-        # symmetric with GeminiLLMProvider — one validation path in
-        # ai_drafts.py regardless of which provider ran.
-        try:
-            return json.loads(content)
-        except json.JSONDecodeError as exc:
-            raise LLMGenerationError(f"OpenRouter returned non-JSON content: {exc}") from exc
 
     async def aclose(self) -> None:
         await self.client.__aexit__(None, None, None)
+
+
+
 
 
 if __name__ == "__main__":
@@ -121,7 +157,7 @@ if __name__ == "__main__":
     async def _main() -> None:
         provider = OpenRouterLLMProvider(
             api_key=settings.OPENROUTER_API_KEY,
-            model="openai/gpt-4o-mini",  # verify any model slug against
+            model="qwen/qwen3.7-flash",  # verify any model slug against
             # https://openrouter.ai/models — a made-up slug just 404s
         )
         try:
