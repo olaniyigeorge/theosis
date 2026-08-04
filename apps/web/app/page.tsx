@@ -2,9 +2,8 @@ import Link from "next/link";
 
 const navigation = [
   { label: "Explore", href: "/explore" },
-  { label: "Search", href: "/search" },
+  { label: "Ask", href: "/ask" },
   { label: "Journeys", href: "/journeys" },
-  { label: "API", href: "/docs" },
 ];
 
 const entryPoints = [
@@ -96,7 +95,7 @@ export default function Home() {
               <Link className="btn primary" href="/explore">
                 Explore the graph &rarr;
               </Link>
-              <Link className="btn ghost" href="/search">
+              <Link className="btn ghost" href="/ask">
                 Search Scripture
               </Link>
             </div>
@@ -183,7 +182,7 @@ export default function Home() {
               Search Moses, Abraham, David, the Exodus, or any thread in Scripture
               and discover where the connections lead.
             </p>
-            <Link className="btn primary" href="/search">
+            <Link className="btn primary" href="/explore">
               Begin exploring &rarr;
             </Link>
           </div>

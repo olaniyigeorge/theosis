@@ -13,13 +13,16 @@ import {
   type ScriptureCitation,
 } from "@/lib/theosis/types";
 import Link from "next/link";
+import { ThinkingOrb } from 'thinking-orbs';
+
+type OrbState = "searching" | "connecting" | "composing";
 
 // Visual pace-setter matching the backend's grounding pipeline
-const STAGES = [
-  "Searching Scripture for relevant passages",
-  "Verifying references against canonical text",
-  "Composing grounded counsel",
-] as const;
+const STAGES: { label: string; orbState: OrbState }[] = [
+  { label: "Searching Scripture for relevant passages", orbState: "searching" },
+  { label: "Verifying references against canonical text", orbState: "connecting" },
+  { label: "Composing grounded counsel", orbState: "composing" },
+];
 
 const STAGE_DURATION_MS = 1400;
 
@@ -111,8 +114,8 @@ export default function AdviceExperience() {
     <div className={styles.page}>
       <div className={styles.wrap}>
         <nav className="flex items-center gap-1.5 text-xs tracking-tight">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className={`${styles.eyebrow} hover:text-foreground transition-colors duration-150`}
           >
             Theosis
@@ -121,7 +124,6 @@ export default function AdviceExperience() {
           <span className={styles.eyebrow}>Scripture Counsel</span>
         </nav>
 
-        
         <h1 className={styles.title}>Bring it to the text.</h1>
         <p className={styles.subtitle}>
           Ask a real question. What comes back is composed strictly from
@@ -167,18 +169,25 @@ export default function AdviceExperience() {
           </div>
 
           {status === "loading" && (
-            <div className={styles.stages} aria-live="polite">
-              {STAGES.map((label, i) => (
-                <div
-                  key={label}
-                  className={`${styles.stage} ${
-                    i === activeStage ? styles.active : ""
-                  } ${i < activeStage ? styles.done : ""}`}
-                >
-                  <span className={styles.stageDot} />
-                  {label}
-                </div>
-              ))}
+            <div className="mt-6 flex flex-col items-center justify-center p-6 rounded-xl border border-border/40 bg-card/30 backdrop-blur-sm transition-all duration-300">
+              {/* Animated Thinking Orb switching state dynamically based on active stage */}
+              <div className="relative flex items-center justify-center mb-4">
+                <ThinkingOrb state={STAGES[activeStage].orbState} />
+              </div>
+
+              <div className={styles.stages} aria-live="polite">
+                {STAGES.map((stage, i) => (
+                  <div
+                    key={stage.label}
+                    className={`${styles.stage} ${
+                      i === activeStage ? styles.active : ""
+                    } ${i < activeStage ? styles.done : ""}`}
+                  >
+                    <span className={styles.stageDot} />
+                    {stage.label}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </form>
